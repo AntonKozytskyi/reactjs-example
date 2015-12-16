@@ -14,5 +14,5 @@ Code repository for the tutorial by @kenwheeler: [Build A Real-Time Twitter Stre
 4. Create local MongoDB database called **react-tweets** (configured in `server.js`)
 5. Replace credentials for Twitter API (configured in `config.js`)
 6. Start the app: `node server.js`
-7. View in browser at: `http://localhost:8080`
+7. View in browser at: `http://localhost:3000`
 8. Tweet away!
