@@ -1,4 +1,6 @@
 .idea
 node_modules
 config.js
-src/public/js/bundle.js
+
+src/server.dist.js
+src/public/js/app.dist.js
