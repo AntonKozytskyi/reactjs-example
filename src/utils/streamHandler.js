@@ -1,6 +1,8 @@
-var Tweet = require('../models/Tweet');
+// streamHandler.js
 
-module.exports = function(stream, io){
+import Tweet from '../models/Tweet';
+
+export default function(stream, io) {
 
   // When tweets get sent our way ...
   stream.on('data', function(data) {
@@ -8,7 +10,7 @@ module.exports = function(stream, io){
     if (data['user'] !== undefined) {
 
       // Construct a new tweet object
-      var tweet = {
+      let tweet = {
         twid      : data['id_str'],
         active    : false,
         author    : data['user']['name'],
@@ -19,7 +21,7 @@ module.exports = function(stream, io){
       };
 
       // Create a new model instance with our object
-      var tweetEntry = new Tweet(tweet);
+      let tweetEntry = new Tweet(tweet);
 
       // Save 'er to the database
       tweetEntry.save(function(err) {

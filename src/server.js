@@ -1,24 +1,26 @@
-// Require our dependencies
-var express         = require('express');
-var exphbs          = require('express-handlebars');
-var http            = require('http');
-var path            = require('path');
-var mongoose        = require('mongoose');
-var twitter         = require('twitter');
-var routes          = require('./routes');
-var config          = require('./config');
-var streamHandler   = require('./utils/streamHandler');
+// server.js
 
-module.exports = function() {
-  var app = express();
-  var port = process.env.PORT || 3000;
-  var hbs = exphbs.create({
+// Require our dependencies
+import express from 'express';
+import exphbs from 'express-handlebars';
+import http from 'http';
+import path from 'path';
+import mongoose from 'mongoose';
+import Twitter from 'twitter';
+import routes from './routes';
+import config from './config';
+import streamHandler from './utils/streamHandler';
+
+export default function() {
+  let app = express();
+  let port = process.env.PORT || 3000;
+  let hbs = exphbs.create({
     extname       : '.hbs',
     layoutsDir    : path.resolve(__dirname, './views/layouts/'),
     partialsDir   : path.resolve(__dirname, './views/partials/'),
     defaultLayout : 'main'
   });
-  var twit = new twitter(config.twitter);
+  let twit = new Twitter(config.twitter);
 
   // Set /public as our static content dir
   app.use(express.static(path.resolve(__dirname, './public')));
@@ -46,12 +48,12 @@ module.exports = function() {
   });
 
   // Fire this bitch up (start our server)
-  var server = app.listen(port, function() {
+  let server = app.listen(port, function() {
     console.log('Listening at http://localhost:' + port);
   });
 
   // Initialize socket.io
-  var io = require('socket.io')(server);
+  let io = require('socket.io')(server);
 
   // Connect to our mongo database
   mongoose.connect('mongodb://localhost/react-tweets');

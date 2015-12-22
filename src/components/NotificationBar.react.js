@@ -1,8 +1,8 @@
-/** @jsx React.DOM */
+// NotificationBar.react.js
 
-var React = require('react');
+import React from 'react';
 
-module.exports = NotificationBar = React.createClass({
+export default React.createClass({
   render: function(){
     var count = this.props.count;
     return (

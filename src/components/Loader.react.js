@@ -1,8 +1,8 @@
-/** @jsx React.DOM */
+// Loader.react.js
 
-var React = require('react');
+import React from 'react';
 
-module.exports = Loader = React.createClass({
+export default React.createClass({
   render: function(){
     return (
       <div className={"loader " + (this.props.paging ? "active" : "")}>

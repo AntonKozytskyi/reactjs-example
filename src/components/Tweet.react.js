@@ -1,8 +1,8 @@
-/** @jsx React.DOM */
+// Tweet.react.js
 
-var React = require('react');
+import React from 'react';
 
-module.exports = Tweet = React.createClass({
+export default React.createClass({
   render: function(){
     var tweet = this.props.tweet;
     return (
@@ -10,8 +10,8 @@ module.exports = Tweet = React.createClass({
         <img src={tweet.avatar} className="avatar"/>
         <blockquote>
           <cite>
-            <a href={"http://www.twitter.com/" + tweet.screenname}>{tweet.author}</a> 
-            <span className="screen-name">@{tweet.screenname}</span> 
+            <a href={"http://www.twitter.com/" + tweet.screenname}>{tweet.author}</a>
+            <span className="screen-name">@{tweet.screenname}</span>
           </cite>
           <span className="content">{tweet.body}</span>
         </blockquote>

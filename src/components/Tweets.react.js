@@ -1,9 +1,9 @@
-/** @jsx React.DOM */
+// Tweets.react.js
 
-var React = require('react');
-var Tweet = require('./Tweet.react.js');
+import React from 'react';
+import Tweet from './Tweet.react.js';
 
-module.exports = Tweets = React.createClass({
+export default React.createClass({
 
   // Render our tweets
   render: function(){
@@ -22,4 +22,4 @@ module.exports = Tweets = React.createClass({
 
   }
 
-}); 
+});

@@ -1,24 +1,22 @@
-var JSX = require('node-jsx').install(),
-  React = require('react'),
-  TweetsApp = React.createFactory(require('./components/TweetsApp.react')),
-  Tweet = require('./models/Tweet');
+// routes.js
 
-module.exports = {
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import Tweet from './models/Tweet';
+import TweetsApp from './components/TweetsApp.react';
+
+export default {
 
   index: function(req, res) {
     // Call static model method to get tweets in the db
-    Tweet.getTweets(0,0, function(tweets, pages) {
+    Tweet.getTweets(0, 0, function(tweets) {
 
       // Render React to a string, passing in our fetched tweets
-      var markup = React.renderToString(
-        TweetsApp({
-          tweets: tweets
-        })
-      );
+      var markup = ReactDOMServer.renderToString(<TweetsApp tweets={tweets} />);
 
       // Render our 'home' template
       res.render('home', {
-        markup: markup, // Pass rendered react markup
+        markup: markup,               // Pass rendered react markup
         state: JSON.stringify(tweets) // Pass current state to client side
       });
 
