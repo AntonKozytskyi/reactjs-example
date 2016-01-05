@@ -1,6 +1,15 @@
+# IDE project info
 .idea
+
+# App dependencies
 node_modules
+
+# NPM debug info
+npm-debug.log
+
+# App config
 config.js
 
+# Packed dist files
 src/server.dist.js
 src/public/js/app.dist.js
