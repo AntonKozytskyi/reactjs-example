@@ -1,6 +1,6 @@
 // TweetsApp.react.js
 
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Tweets from './Tweets.react.js';
 import Loader from './Loader.react.js';
 import NotificationBar from './NotificationBar.react.js';
@@ -9,15 +9,11 @@ import NotificationBar from './NotificationBar.react.js';
 class TweetsApp extends Component {
 
   static propTypes = {
-    tweets  : React.PropTypes.array.isRequired,
-    count   : React.PropTypes.number,
-    page    : React.PropTypes.number,
-    paging  : React.PropTypes.bool,
-    skip    : React.PropTypes.number,
-    done    : React.PropTypes.bool
+    tweets  : PropTypes.array.isRequired
   };
 
-  static defaultProps = {
+  state = {
+    tweets  : this.props.tweets,
     count   : 0,
     page    : 0,
     paging  : false,
@@ -25,29 +21,14 @@ class TweetsApp extends Component {
     done    : false
   };
 
-  // Set the initial component state
-  //getInitialState (props) {
-  //
-  //  props = props || this.props;
-  //
-  //  // Set initial application state using props
-  //  return {
-  //    tweets: props.tweets,
-  //    count: 0,
-  //    page: 0,
-  //    paging: false,
-  //    skip: 0,
-  //    done: false
-  //  };
-  //
-  //}
-  //
-  //componentWillReceiveProps (newProps, oldProps) {
-  //  this.setState(this.getInitialState(newProps));
-  //}
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      tweets: this.props.tweets
+    });
+  };
 
   // Method to add a tweet to our timeline
-  addTweet (tweet) {
+  addTweet = (tweet) => {
 
     // Get current application state
     let updated = this.state.tweets;
@@ -64,26 +45,27 @@ class TweetsApp extends Component {
     // Set application state
     this.setState({tweets: updated, count: count, skip: skip});
 
-  }
+  };
 
   // Method to get JSON from server by page
-  getPage (page) {
+  getPage = (page) => {
 
     // Setup our ajax request
-    let request = new XMLHttpRequest(), self = this;
-    request.open('GET', 'page/' + page + "/" + this.state.skip, true);
+    let request = new XMLHttpRequest();
+
+    request.open('GET', 'page/' + page + '/' + this.state.skip, true);
     request.onload = function() {
 
       // If everything is cool...
       if (request.status >= 200 && request.status < 400){
 
         // Load our next page
-        self.loadPagedTweets(JSON.parse(request.responseText));
+        this.loadPagedTweets(JSON.parse(request.responseText));
 
       } else {
 
         // Set application state (Not paging, paging complete)
-        self.setState({paging: false, done: true});
+        this.setState({paging: false, done: true});
 
       }
     };
@@ -91,26 +73,26 @@ class TweetsApp extends Component {
     // Fire!
     request.send();
 
-  }
+  };
 
   // Method to show the unread tweets
-  showNewTweets () {
+  showNewTweets = () => {
 
     // Get current application state
     let updated = this.state.tweets;
 
     // Mark our tweets active
-    updated.forEach(function(tweet){
+    updated.forEach(function(tweet) {
       tweet.active = true;
     });
 
     // Set application state (active tweets + reset unread count)
     this.setState({tweets: updated, count: 0});
 
-  }
+  };
 
   // Method to load tweets fetched from the server
-  loadPagedTweets (tweets) {
+  loadPagedTweets = (tweets) => {
 
     // So meta lol
     let self = this;
@@ -128,7 +110,7 @@ class TweetsApp extends Component {
 
       // This app is so fast, I actually use a timeout for dramatic effect
       // Otherwise you'd never see our super sexy loader svg
-      setTimeout(function(){
+      setTimeout(function() {
 
         // Set application state (Not paging, add tweets)
         self.setState({tweets: updated, paging: false});
@@ -141,10 +123,10 @@ class TweetsApp extends Component {
       this.setState({done: true, paging: false});
 
     }
-  }
+  };
 
   // Method to check if more tweets should be loaded, by scroll position
-  checkWindowScroll() {
+  checkWindowScroll = () => {
 
     // Get scroll pos & window data
     let h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -161,10 +143,10 @@ class TweetsApp extends Component {
       this.getPage(this.state.page);
 
     }
-  }
+  };
 
   // Called directly after component rendering, only on client
-  componentDidMount() {
+  componentDidMount = () => {
 
     // Preserve self reference
     let self = this;
@@ -173,7 +155,7 @@ class TweetsApp extends Component {
     let socket = io.connect();
 
     // On tweet event emission...
-    socket.on('tweet', function (data) {
+    socket.on('tweet', function(data) {
 
         // Add a tweet to our queue
         self.addTweet(data);
@@ -183,7 +165,7 @@ class TweetsApp extends Component {
     // Attach scroll event to the window for infinity paging
     window.addEventListener('scroll', this.checkWindowScroll);
 
-  }
+  };
 
   // Render the component
   render() {

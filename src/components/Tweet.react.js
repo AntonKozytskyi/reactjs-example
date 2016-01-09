@@ -1,21 +1,27 @@
 // Tweet.react.js
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-export default React.createClass({
-  render: function(){
-    var tweet = this.props.tweet;
-    return (
-      <li className={"tweet" + (tweet.active ? ' active' : '')}>
-        <img src={tweet.avatar} className="avatar"/>
-        <blockquote>
-          <cite>
-            <a href={"http://www.twitter.com/" + tweet.screenname}>{tweet.author}</a>
-            <span className="screen-name">@{tweet.screenname}</span>
-          </cite>
-          <span className="content">{tweet.body}</span>
-        </blockquote>
-      </li>
-    )
-  }
-});
+class Tweet extends Component {
+
+    render() {
+        let tweet = this.props.tweet;
+
+        return (
+            <li className={"tweet" + (tweet.active ? ' active' : '')}>
+                <img src={tweet.avatar} className="avatar"/>
+                <blockquote>
+                    <cite>
+                        <a href={"http://www.twitter.com/" + tweet.screenname}>{tweet.author}</a>
+                        <span className="screen-name">@{tweet.screenname}</span>
+                    </cite>
+                    <span className="content">{tweet.body}</span>
+                </blockquote>
+            </li>
+        )
+    }
+
+}
+
+export default Tweet;
+

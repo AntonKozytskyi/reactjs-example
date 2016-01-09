@@ -1,13 +1,17 @@
 // Loader.react.js
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-export default React.createClass({
-  render: function(){
+class Loader extends Component {
+
+  render() {
     return (
-      <div className={"loader " + (this.props.paging ? "active" : "")}>
-        <img src="svg/loader.svg" />
-      </div>
+        <div className={"loader " + (this.props.paging ? "active" : "")}>
+          <img src="svg/loader.svg" />
+        </div>
     )
   }
-});
+
+}
+
+export default Loader;
