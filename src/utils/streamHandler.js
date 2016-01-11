@@ -2,7 +2,7 @@
 
 import Tweet from '../models/Tweet';
 
-export default function(stream, io) {
+function streamHandler(stream, io) {
 
   // When tweets get sent our way ...
   stream.on('data', function(data) {
@@ -35,4 +35,6 @@ export default function(stream, io) {
 
   });
 
-};
+}
+
+export default streamHandler;

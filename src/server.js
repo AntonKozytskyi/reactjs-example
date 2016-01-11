@@ -3,7 +3,6 @@
 // Require our dependencies
 import express from 'express';
 import exphbs from 'express-handlebars';
-import http from 'http';
 import path from 'path';
 import mongoose from 'mongoose';
 import Twitter from 'twitter';
@@ -11,55 +10,61 @@ import routes from './routes';
 import config from './config';
 import streamHandler from './utils/streamHandler';
 
-export default function() {
-  let app = express();
-  let port = process.env.PORT || 3000;
-  let hbs = exphbs.create({
-    extname       : '.hbs',
-    layoutsDir    : path.resolve(__dirname, './views/layouts/'),
-    partialsDir   : path.resolve(__dirname, './views/partials/'),
-    defaultLayout : 'main'
-  });
-  let twit = new Twitter(config.twitter);
+const server = global.server = express();
+const port = process.env.PORT || 5000;
+const hbs = exphbs.create({
+  extname       : '.hbs',
+  layoutsDir    : path.resolve(__dirname, './views/layouts/'),
+  partialsDir   : path.resolve(__dirname, './views/partials/'),
+  defaultLayout : 'main'
+});
+const twit = new Twitter(config.twitter);
 
-  // Set /public as our static content dir
-  app.use(express.static(path.resolve(__dirname, './public')));
+server.set('port', port);
 
-  // Set handlebars as the templating engine
-  app.engine('.hbs', hbs.engine);
-  app.set('view engine', '.hbs');
-  app.set('views', path.resolve(__dirname, './views'));
+//
+// Register Node.js middleware
+// -----------------------------------------------------------------------------
+server.use(express.static(path.join(__dirname, 'public')));
 
-  // Disable etag headers on responses
-  app.disable('etag');
+//
+// Set handlebars as the templating engine
+// -----------------------------------------------------------------------------
+server.engine('.hbs', hbs.engine);
+server.set('view engine', '.hbs');
+server.set('views', path.resolve(__dirname, './views'));
 
-  // Index Route
-  app.get('/', routes.index);
-  // Page Route
-  app.get('/page/:page/:skip', routes.page);
+// Disable etag headers on responses
+server.disable('etag');
 
-  // Set the error handlers
-  app.use(function(req, res, next) {
-    res.status(404).send('Sorry cant find that!');
-  });
-  app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-  });
+// Index Route
+server.get('/', routes.index);
+// Page Route
+server.get('/page/:page/:skip', routes.page);
 
-  // Fire this bitch up (start our server)
-  let server = app.listen(port, function() {
-    console.log('Listening at http://localhost:' + port);
-  });
+// Set the error handlers
+server.use((req, res, next) => {
+  res.status(404).send('Sorry cant find that!');
+});
+server.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
-  // Initialize socket.io
-  let io = require('socket.io')(server);
+//
+// Launch the server
+// -----------------------------------------------------------------------------
+const httpServer = server.listen(port, () => {
+  console.log(`The server is running at http://localhost:${port}/`);
+});
 
-  // Connect to our mongo database
-  mongoose.connect('mongodb://localhost/react-tweets');
+// Initialize socket.io
+const io = require('socket.io')(httpServer);
 
-  // Set a stream listener for tweets matching tracking keywords
-  twit.stream('statuses/filter', { track: '#russia'}, function(stream) {
-    streamHandler(stream, io);
-  });
-};
+// Connect to our mongo database
+mongoose.connect('mongodb://localhost/react-tweets');
+
+// Set a stream listener for tweets matching tracking keywords
+twit.stream('statuses/filter', { track: '#russia'}, function(stream) {
+  streamHandler(stream, io);
+});

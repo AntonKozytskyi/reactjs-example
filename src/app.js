@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import TweetsApp from './components/TweetsApp.react';
 
 // Snag the initial state that was passed from the server side
-let initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
+const initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
 
 // Render the components, picking up where react left off on the server
 ReactDOM.render(

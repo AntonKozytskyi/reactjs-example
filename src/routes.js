@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server';
 import Tweet from './models/Tweet';
 import TweetsApp from './components/TweetsApp.react';
 
-export default {
+const routes = {
 
   index: function(req, res) {
     // Call static model method to get tweets in the db
@@ -34,3 +34,5 @@ export default {
   }
 
 };
+
+export default routes;
