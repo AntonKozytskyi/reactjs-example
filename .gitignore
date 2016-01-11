@@ -12,4 +12,6 @@ config.js
 
 # Packed dist files
 src/server.dist.js
-src/public/js/app.dist.js
+src/server.dist.js.map
+src/public/js/app.js
+src/public/assets.json

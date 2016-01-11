@@ -1,34 +1,37 @@
 // start.js
 
-var browserSync = require('browser-sync');
-var webpack = require('webpack');
-var webpackDevMiddleware = require('webpack-dev-middleware');
-var webpackHotMiddleware = require('webpack-hot-middleware');
-var webpackConfig = require('./webpack.config')[0]; // Client-side bundle configuration
-var build = require('./build');
-var serve = require('./serve');
+import browserSync from 'browser-sync';
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpackConfig from './webpack.config';
+import run from './run';
+import bundle from './bundle';
+import serve from './serve';
 
-var bundler = webpack(webpackConfig);
-
-global.DEBUG = true;
-global.VERBOSE = true;
 global.WATCH = true;
+const webpackAppConfig = webpackConfig[0]; // Client-side bundle configuration
+const bundler = webpack(webpackAppConfig);
 
-module.exports = function() {
-  build();
-  serve();
+/**
+ * Launches a development web server with "live reload" functionality -
+ * synchronizing URLs, interactions and code changes across multiple devices.
+ */
+async function start() {
+  await run(bundle);
+  await run(serve);
 
   browserSync({
     proxy: {
-      target: 'localhost:3000',
+      target: 'localhost:5000',
       middleware: [
         webpackDevMiddleware(bundler, {
           // IMPORTANT: dev middleware can't access config, so we should
           // provide publicPath by ourselves
-          publicPath: webpackConfig.output.publicPath,
+          publicPath: webpackAppConfig.output.publicPath,
 
           // Pretty colored output
-          stats: webpackConfig.stats
+          stats: webpackAppConfig.stats
 
           // For other settings see
           // http://webpack.github.io/docs/webpack-dev-middleware.html
@@ -38,9 +41,14 @@ module.exports = function() {
         webpackHotMiddleware(bundler)
       ]
     },
+
+    // no need to watch '*.js' here, webpack will take care of it for us,
+    // including full page reloads if HMR won't work
     files: [
       'src/public/css/*.css',
       'src/views/**/*.hbs'
     ]
   });
-};
+}
+
+export default start;
